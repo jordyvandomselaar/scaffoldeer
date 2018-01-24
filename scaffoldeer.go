@@ -67,7 +67,7 @@ func copyStubs(stubs []Stub, replacements map[string]string) {
 }
 
 func getStubs(filesAndFolders []os.FileInfo, stubsPath string) []Stub {
-    stubs := []Stub{nil}
+    stubs := []Stub{}
 
     for _, fileInfo := range filesAndFolders {
         if !fileInfo.IsDir() {

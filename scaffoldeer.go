@@ -14,6 +14,7 @@ func main() {
     app := cli.NewApp()
     app.Name = "Scaffoldeer"
     app.Usage = "Scaffold stubs with ease."
+    app.Version = "0.1"
     app.Commands = []cli.Command{
         {
             Name:   "make",
@@ -35,7 +36,17 @@ func scaffold(c *cli.Context) error {
     fields := c.String("fields")
 
     templateName := c.Args().Get(0)
-    templatePath := path.Join(".", "templates", templateName)
+    scriptPath, err := os.Executable()
+
+    print(scriptPath)
+
+    if err != nil {
+        return err
+    }
+
+    scriptPath = path.Join(scriptPath, "../")
+
+    templatePath := path.Join(scriptPath, "templates", templateName)
 
     stubsPath := path.Join(templatePath, "stubs")
     filesAndFolders, _ := ioutil.ReadDir(stubsPath)
@@ -62,7 +73,7 @@ func copyStubs(stubs []Stub, replacements map[string]string) {
 
         stubNewName = strings.Replace(stubNewName, ".stub", "", -1)
 
-        copyFile(stub.FullPath, path.Join(stubNewRelativePath, stubNewName), replacements)
+        copyFile(stub.FullPath, path.Join(".", stubNewRelativePath, stubNewName), replacements)
     }
 }
 

@@ -38,8 +38,6 @@ func scaffold(c *cli.Context) error {
     templateName := c.Args().Get(0)
     scriptPath, err := os.Executable()
 
-    print(scriptPath)
-
     if err != nil {
         return err
     }

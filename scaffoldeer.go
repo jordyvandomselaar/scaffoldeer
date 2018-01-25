@@ -14,7 +14,7 @@ func main() {
     app := cli.NewApp()
     app.Name = "Scaffoldeer"
     app.Usage = "Scaffold stubs with ease."
-    app.Version = "0.2.2"
+    app.Version = "1.0.0"
     app.Commands = []cli.Command{
         {
             Name:   "make",

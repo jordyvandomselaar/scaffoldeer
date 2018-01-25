@@ -8,6 +8,8 @@ import (
     "os"
     "path"
     "strings"
+    "log"
+    "path/filepath"
 )
 
 func main() {
@@ -43,12 +45,15 @@ func scaffold(c *cli.Context) error {
     }
 
     scriptPath = path.Join(scriptPath, "../")
+    scriptPath = "/Users/jordy/go/src/github.com/jordyvandomselaar/scaffoldeer"
 
     templatePath := path.Join(scriptPath, "templates", templateName)
 
     stubsPath := path.Join(templatePath, "stubs")
-    filesAndFolders, _ := ioutil.ReadDir(stubsPath)
-    stubs := getStubs(filesAndFolders, stubsPath)
+
+    stubs, err := getStubs(stubsPath)
+
+    handleError(err)
 
     parsedFields := strings.Split(fields, ",")
     replacements := make(map[string]string)
@@ -75,23 +80,27 @@ func copyStubs(stubs []Stub, replacements map[string]string) {
     }
 }
 
-func getStubs(filesAndFolders []os.FileInfo, stubsPath string) []Stub {
+func getStubs(stubsPath string) ([]Stub, error) {
     stubs := []Stub{}
 
-    for _, fileInfo := range filesAndFolders {
-        if !fileInfo.IsDir() {
-            filePath := path.Join(stubsPath, fileInfo.Name())
-            fileContent, _ := ioutil.ReadFile(filePath)
-
-            stubs = append(stubs, Stub{
-                FullPath:     filePath,
-                RelativePath: "",
-                Name:         fileInfo.Name(),
-                Content:      fileContent,
-            })
+    err := filepath.Walk(stubsPath, func(currentPath string, fileInfo os.FileInfo, err error) error {
+        if fileInfo.IsDir() {
+            return err
         }
-    }
-    return stubs
+
+        fileContent, _ := ioutil.ReadFile(currentPath)
+
+        stubs = append(stubs, Stub{
+            FullPath:     currentPath,
+            RelativePath: "",
+            Name:         fileInfo.Name(),
+            Content:      fileContent,
+        })
+
+        return err
+    })
+
+    return stubs, err
 }
 
 func copyFile(source string, destination string, replacements map[string]string) error {
@@ -127,4 +136,10 @@ func parseReplacements(input string, replacements map[string]string) string {
     }
 
     return input
+}
+
+func handleError(err error) {
+    if err != nil {
+        log.Fatal(err)
+    }
 }

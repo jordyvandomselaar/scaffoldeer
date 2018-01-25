@@ -89,7 +89,7 @@ func parseReplacements(fields string) map[string]string {
     return replacements
 }
 
-// Copy stubs to another the current folder.
+// Write stubs to disk.
 func writeStubs(stubs []Stub) {
     for _, stub := range stubs {
         os.MkdirAll(stub.RelativePath, 0777)

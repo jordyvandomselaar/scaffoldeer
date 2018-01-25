@@ -14,12 +14,12 @@ func main() {
     app := cli.NewApp()
     app.Name = "Scaffoldeer"
     app.Usage = "Scaffold stubs with ease."
-    app.Version = "0.2"
+    app.Version = "0.2.2"
     app.Commands = []cli.Command{
         {
             Name:   "make",
             Usage:  "Scaffold a new template",
-            Action: scaffold,
+            Action: scaffoldAction,
             Flags: []cli.Flag{
                 cli.StringFlag{
                     Name:  "fields",
@@ -32,16 +32,23 @@ func main() {
     app.Run(os.Args)
 }
 
+// Holds all data we need to parse, and write stubs.
 type Stub struct {
     FullPath, RelativePath, Name string
     Content                      []byte
 }
 
-// Scaffold a template.
-func scaffold(c *cli.Context) error {
+// The scaffold action to be called from cli.
+func scaffoldAction(c *cli.Context) {
     fields := c.String("fields")
-
     templateName := c.Args().Get(0)
+
+    err := scaffold(templateName, fields)
+    handleError(err)
+}
+
+// Scaffold a template.
+func scaffold(templateName string, fields string) error {
     scriptPath, err := os.Executable()
 
     if err != nil {
@@ -49,14 +56,14 @@ func scaffold(c *cli.Context) error {
     }
 
     scriptPath = path.Join(scriptPath, "../")
-
     templatePath := path.Join(scriptPath, "templates", templateName)
-
     stubsPath := path.Join(templatePath, "stubs")
 
     stubs, err := getStubs(stubsPath)
 
-    handleError(err)
+    if err != nil {
+        return err
+    }
 
     replacements := parseReplacements(fields)
 

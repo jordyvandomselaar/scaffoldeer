@@ -45,6 +45,8 @@ func scaffoldAction(c *cli.Context) {
 
     err := scaffold(templateName, fields)
     handleError(err)
+
+    print("We're all set! Build something amazing 🚀️")
 }
 
 // Scaffold a template.

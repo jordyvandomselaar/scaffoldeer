@@ -3,11 +3,11 @@ package main
 import (
     "gopkg.in/urfave/cli.v1"
     "io/ioutil"
+    "log"
     "os"
     "path"
-    "strings"
-    "log"
     "path/filepath"
+    "strings"
 )
 
 func main() {

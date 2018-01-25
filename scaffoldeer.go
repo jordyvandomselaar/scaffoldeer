@@ -45,7 +45,6 @@ func scaffold(c *cli.Context) error {
     }
 
     scriptPath = path.Join(scriptPath, "../")
-    scriptPath = "/Users/jordy/go/src/github.com/jordyvandomselaar/scaffoldeer"
 
     templatePath := path.Join(scriptPath, "templates", templateName)
 

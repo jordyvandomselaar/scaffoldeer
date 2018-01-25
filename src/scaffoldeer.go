@@ -1,4 +1,4 @@
-package src
+package main
 
 import (
     "gopkg.in/urfave/cli.v1"
@@ -104,7 +104,7 @@ func writeStubs(stubs []Stub) {
 
 // Parse stubs
 func parseStubs(stubs []Stub, replacements map[string]string) []Stub {
-    parsedStubs := []Stub{}
+    var parsedStubs []Stub
 
     for _, stub := range stubs {
         stubNewName := replacePlaceholders(stub.Name, replacements)
@@ -124,7 +124,7 @@ func parseStubs(stubs []Stub, replacements map[string]string) []Stub {
 
 // Get all stub files recursively.
 func getStubs(stubsPath string) ([]Stub, error) {
-    stubs := []Stub{}
+    var stubs []Stub
 
     err := filepath.Walk(stubsPath, func(currentPath string, fileInfo os.FileInfo, err error) error {
         if err != nil || fileInfo.IsDir() {

@@ -16,7 +16,7 @@ func main() {
     app := cli.NewApp()
     app.Name = "Scaffoldeer"
     app.Usage = "Scaffold stubs with ease."
-    app.Version = "0.1"
+    app.Version = "0.2"
     app.Commands = []cli.Command{
         {
             Name:   "make",
@@ -76,7 +76,8 @@ func copyStubs(stubs []Stub, replacements map[string]string) {
 
         stubNewName = strings.Replace(stubNewName, ".stub", "", -1)
 
-        copyFile(stub.FullPath, path.Join(".", stubNewRelativePath, stubNewName), replacements)
+        os.MkdirAll(stubNewRelativePath, 0777)
+        copyFile(stub.FullPath, path.Join(stubNewRelativePath, stubNewName), replacements)
     }
 }
 
@@ -89,10 +90,13 @@ func getStubs(stubsPath string) ([]Stub, error) {
         }
 
         fileContent, _ := ioutil.ReadFile(currentPath)
+        relativePath := strings.Replace(currentPath, stubsPath, "", -1)
+        relativePath = strings.Replace(relativePath, fileInfo.Name(), "", -1)
+        relativePath = strings.Trim(relativePath, "/")
 
         stubs = append(stubs, Stub{
             FullPath:     currentPath,
-            RelativePath: "",
+            RelativePath: relativePath,
             Name:         fileInfo.Name(),
             Content:      fileContent,
         })
